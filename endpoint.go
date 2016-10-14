@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"io/ioutil"
 	"log"
 	"net/http"
@@ -30,14 +31,23 @@ func (g *githubWebHook) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var (
-		payload []byte
+		buf     []byte
+		payload map[string]interface{}
+		out     []byte
 		err     error
 	)
-	if payload, err = ioutil.ReadAll(r.Body); err != nil {
+	if buf, err = ioutil.ReadAll(r.Body); err != nil {
 		log.Printf("failed to read body of request %#v err=%v.", r.URL.Path, err)
-		http.Error(w, http.StatusText(http.StatusMethodNotAllowed), http.StatusMethodNotAllowed)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("Received post request against %#v. Payload:\n%s\n", r.URL.Path, payload)
+	if err = json.Unmarshal(buf, &payload); err != nil {
+		log.Printf("failed to unmarshal payload of request %#v err=%v.", r.URL.Path, err)
+		http.Error(w, http.StatusText(http.StatusInternalServerError), http.StatusInternalServerError)
+		return
+	}
+
+	out, _ = json.MarshalIndent(payload, "", "  ")
+	log.Printf("Received post request against %#v. Payload:\n%s\n", r.URL.Path, out)
 }
