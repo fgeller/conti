@@ -28,7 +28,7 @@ func newJSONDatabase(fn string) (*jsonDatabase, error) {
 	if file, err = os.OpenFile(fn, os.O_CREATE|os.O_RDWR, 0644); err != nil {
 		return res, err
 	}
-	defer file.Close()
+	defer logClose("file backing database", file)
 
 	if err = json.NewDecoder(file).Decode(res); err == io.EOF {
 		log.Printf("initializing database.")
