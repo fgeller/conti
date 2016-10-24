@@ -11,14 +11,17 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type endpoint struct{}
+type endpoint struct {
+	db database
+}
 
-func newEndpoint() *endpoint { return &endpoint{} }
+func newEndpoint(db database) *endpoint { return &endpoint{db} }
 
 func (ep *endpoint) start() {
 	var (
 		s = newSocket()
 		g = newGithubWebHook(s.in)
+		a = newHTTPAPI(ep.db)
 	)
 
 	go s.start()
@@ -26,6 +29,7 @@ func (ep *endpoint) start() {
 	mux := http.NewServeMux()
 	mux.Handle("/github/webhook/", g)
 	mux.Handle("/socket", s)
+	mux.Handle("/tasks/", a)
 	addr := "0.0.0.0:7272"
 
 	log.Printf("endpoint starting to listen on %#v", addr)

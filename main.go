@@ -1,8 +1,16 @@
 package main
 
-import "fmt"
+import "log"
 
 func main() {
-	fmt.Printf("hello, world\n")
-	newEndpoint().start()
+	var (
+		db  database
+		err error
+	)
+
+	if db, err = newJSONDatabase("/tmp/cd.json"); err != nil {
+		log.Fatalf("failed to create database, err=%v", err)
+	}
+
+	newEndpoint(db).start()
 }

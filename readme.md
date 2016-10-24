@@ -16,18 +16,18 @@ interface
 ==
 
 ```
-POST /tasks {"name": "test x", "script": "export GOPATH=/home/feller/\ngit clone https://github.com/fgeller/x\ncd x\ngo test -v\n"}
+POST /tasks {"name": "test cd", "script": "export GOPATH=/home/feller/\ngit clone https://github.com/fgeller/cd\ncd x\ngo test -v\n"}
  -> 200 {"id": "abc"}
 ```
 
 ```
-POST /task/abc/runs {"task-id": "abc", "vc-ref": "cafecafe"}
+POST /tasks/abc/runs {"task-id": "abc", "vc-ref": "cafecafe"}
  -> 200 {"id": "24"}
 ```
 
 ```
 GET /tasks
- -> 200 {"tasks": [{"id": "abc", "name": "test x", "script": "export GOPATH=/home/feller/\ngit clone https://github.com/fgeller/x\ncd x\ngo test -v\n", "runs": [{"id": "24", "task-id": "abc", "vc-ref": "cafecafe", "status": "pending", "stdout": null, "stderr": null}]}]}
+ -> 200 {"tasks": [{"id": "abc", "name": "test cd", "script": "export GOPATH=/home/feller/\ngit clone https://github.com/fgeller/cd\ncd cd\ngo test -v\n", "runs": [{"id": "24", "task-id": "abc", "vc-ref": "cafecafe", "status": "pending", "stdout": null, "stderr": null}]}]}
 ```
 
 BONUS
