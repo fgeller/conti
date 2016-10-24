@@ -16,7 +16,7 @@ interface
 ==
 
 ```
-POST /tasks {"name": "test cd", "script": "export GOPATH=/home/feller/\ngit clone https://github.com/fgeller/cd\ncd x\ngo test -v\n"}
+POST /tasks {"name": "test cd", "script": "export GOPATH=/home/feller/\ngit clone https://github.com/fgeller/contd\ncd contd\ngo test -v\n"}
  -> 200 {"id": "abc"}
 ```
 
