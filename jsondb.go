@@ -3,6 +3,7 @@ package main
 import (
 	"encoding/json"
 	"io"
+	"log"
 	"os"
 	"sync"
 
@@ -11,23 +12,27 @@ import (
 
 type jsonDatabase struct {
 	sync.RWMutex
-	file *os.File
+	fileName string
 
 	Tasks []task
 }
 
 func newJSONDatabase(fn string) (*jsonDatabase, error) {
 	var (
-		err error
-		res = &jsonDatabase{}
+		err  error
+		file *os.File
+		res  = &jsonDatabase{fileName: fn}
 	)
+	log.Printf("starting json database backed by %#v", fn)
 
-	if res.file, err = os.OpenFile(fn, os.O_CREATE|os.O_RDWR, 0644); err != nil {
+	if file, err = os.OpenFile(fn, os.O_CREATE|os.O_RDWR, 0644); err != nil {
 		return res, err
 	}
+	defer file.Close()
 
-	if err = json.NewDecoder(res.file).Decode(res); err == io.EOF {
-		return res, res.persist()
+	if err = json.NewDecoder(file).Decode(res); err == io.EOF {
+		log.Printf("initializing database.")
+		return res, json.NewEncoder(file).Encode(res)
 	}
 
 	return res, err
@@ -42,7 +47,16 @@ func (db *jsonDatabase) createTask(name, script string) (string, error) {
 }
 
 func (db *jsonDatabase) persist() error {
-	return json.NewEncoder(db.file).Encode(db)
+	var (
+		file *os.File
+		err  error
+	)
+
+	if file, err = os.OpenFile(db.fileName, os.O_CREATE|os.O_WRONLY|os.O_TRUNC, 0644); err != nil {
+		return err
+	}
+
+	return json.NewEncoder(file).Encode(db)
 }
 
 func (db *jsonDatabase) readTasks() ([]task, error) {
