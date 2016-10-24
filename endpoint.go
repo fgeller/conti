@@ -29,6 +29,7 @@ func (ep *endpoint) start() {
 	mux := http.NewServeMux()
 	mux.Handle("/github/webhook/", g)
 	mux.Handle("/socket", s)
+	mux.Handle("/tasks", a)
 	mux.Handle("/tasks/", a)
 	addr := "0.0.0.0:7272"
 
