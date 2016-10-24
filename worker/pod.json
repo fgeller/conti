@@ -1,0 +1,21 @@
+{
+  "apiVersion": "v1",
+  "kind": "Pod",
+  "metadata": {
+    "name": "contd-worker",
+    "namespace": "minikube",
+    "labels": { "name": "contd-worker" }
+  },
+  "spec": {
+    "containers": [
+      {
+        "name": "contd-worker",
+        "image": "contd-worker:v1.0.0",
+        "livenessProbe": { "tcpSocket": { "port": 22 } },
+        "ports": [
+          { "name": "ssh", "protocol": "TCP", "containerPort": 22 }
+        ]
+      }
+    ]
+  }
+}
