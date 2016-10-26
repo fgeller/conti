@@ -1,5 +1,5 @@
  FROM alpine:3.4
 
- ADD contd /contd
+ ADD conti /conti
 
- ENTRYPOINT ["/contd"]
+ ENTRYPOINT ["/conti"]

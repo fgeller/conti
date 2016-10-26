@@ -2,15 +2,15 @@
   "apiVersion": "v1",
   "kind": "Pod",
   "metadata": {
-    "name": "contd",
+    "name": "conti",
     "namespace": "minikube",
-    "labels": { "name": "contd" }
+    "labels": { "name": "conti" }
   },
   "spec": {
     "containers": [
       {
-        "name": "contd",
-        "image": "contd:v1.0.8",
+        "name": "conti",
+        "image": "conti:v1.0.10",
         "livenessProbe": { "httpGet": { "path": "/tasks", "port": 7272 } },
         "ports": [
           { "name": "web", "protocol": "TCP", "containerPort": 7272 }
