@@ -10,7 +10,7 @@
     "containers": [
       {
         "name": "contd",
-        "image": "contd:v1.0.2",
+        "image": "contd:v1.0.8",
         "livenessProbe": { "httpGet": { "path": "/tasks", "port": 7272 } },
         "ports": [
           { "name": "web", "protocol": "TCP", "containerPort": 7272 }

@@ -11,7 +11,7 @@ import (
 )
 
 func TestCreateAndListTaskViaHTTP(t *testing.T) {
-	target := newHTTPAPI(&memDatabase{})
+	target := newHTTPAPI(&memDatabase{}, make(chan run, 10))
 	srv := httptest.NewServer(target)
 	defer srv.Close()
 

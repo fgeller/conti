@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"os"
@@ -44,6 +45,27 @@ func (db *jsonDatabase) createTask(name, script string) (string, error) {
 	defer db.Unlock()
 	db.Tasks = append(db.Tasks, task{ID: id, Name: name, Script: script})
 	return id, db.persist()
+}
+
+func (db *jsonDatabase) writeRun(rn run) error {
+	db.Lock()
+	defer db.Unlock()
+
+	for i, t := range db.Tasks {
+		if t.ID == rn.TaskID {
+			for j, r := range t.Runs {
+				if rn.ID == r.ID {
+					t.Runs[j] = rn
+					return db.persist()
+				}
+			}
+
+			db.Tasks[i].Runs = append(db.Tasks[i].Runs, rn)
+			return db.persist()
+		}
+	}
+
+	return fmt.Errorf("couldn't find task %#v", rn.TaskID)
 }
 
 func (db *jsonDatabase) persist() error {

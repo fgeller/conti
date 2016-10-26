@@ -12,16 +12,17 @@ import (
 )
 
 type endpoint struct {
-	db database
+	db          database
+	runRequests chan run
 }
 
-func newEndpoint(db database) *endpoint { return &endpoint{db} }
+func newEndpoint(db database, runReqs chan run) *endpoint { return &endpoint{db, runReqs} }
 
 func (ep *endpoint) start() {
 	var (
 		s = newSocket()
 		g = newGithubWebHook(s.in)
-		a = newHTTPAPI(ep.db)
+		a = newHTTPAPI(ep.db, ep.runRequests)
 	)
 
 	go s.start()
